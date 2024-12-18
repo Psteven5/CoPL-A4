@@ -4,7 +4,7 @@ head([Hd | _], Hd).
 % tail/2 gets the tail of List
 tail([_ | Tl], Tl).
 
-% find/3 puts the index of Item into Result if it is in List
+% find/3 gets the index of Item if it is in List
 find([Item | _], Item, Result, Result) :- !.
 find([_ | Tl], Item, I, Result) :-
 	I_ is I + 1,
