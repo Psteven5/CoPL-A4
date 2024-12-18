@@ -1,5 +1,6 @@
 % helper.pl contains utility functions unrelated to the program
 :- ['helper.pl'].
+:- ['solver.pl'].
 
 % a cell can be empty, a tree, or a tent
 cells([empty, tree, tent]).
@@ -62,12 +63,9 @@ tree_count_board([Head | Tail], Initial, Result) :-
     tree_count_row(Head, Initial, RowCount),
     tree_count_board(Tail, RowCount, Result).
 
-solve(M, N, X, Y, Board) :-
-    sum(X, XSum),
-    sum(Y, YSum),
-    XSum = YSum,
-    tree_count_board(Board, 0, TreeCount),
-    TreeCount = XSum.
-
 main :-
-    solve(3, 3, [2, 0, 2], [2, 0, 2], [[0, 1, 0], [1, 0, 1], [0, 1, 0]]).
+    Board = [[0, 1, 0], [1, 0, 1], [0, 1, 0]],
+    X = [2, 0, 2],
+    Y = [2, 0, 2],
+    solve(3, 3, X, Y, Board, Result),
+    print(Result).
