@@ -26,7 +26,7 @@ row(_, 0, _, _, Result2, Result1, Result1, Result2) :- !.
 row(R, C, M, N, TreeIdxs, Acc, Result1, Result2) :-
 	C_ is C - 1,
 	( head(TreeIdxs, Hd), Hd =:= (M - R) * N + (N - C_)  ->
- 		tail(TreeIdxs, Tl),
+		tail(TreeIdxs, Tl),
 		row(R, C_, M, N, Tl, [tree | Acc], Result1, Result2)
 	; row(R, C_, M, N, TreeIdxs, [empty | Acc], Result1, Result2)).
 
@@ -50,6 +50,24 @@ print_board((_, _, [Hd | Tl])) :-
 	print_row(Hd), write('\n'),
 	print_board((_, _, Tl)).
 
+tree_count_row([], Initial, Result) :- Result is Initial.
+tree_count_row([Head | Tail], Initial, Result) :-
+    (Head = 1 ->
+        Count is Initial + 1
+    ; Count is Initial),
+    tree_count_row(Tail, Count, Result).
+
+tree_count_board([], Initial, Result) :- Result is Initial.
+tree_count_board([Head | Tail], Initial, Result) :-
+    tree_count_row(Head, Initial, RowCount),
+    tree_count_board(Tail, RowCount, Result).
+
+solve(M, N, X, Y, Board) :-
+    sum(X, XSum),
+    sum(Y, YSum),
+    XSum = YSum,
+    tree_count_board(Board, 0, TreeCount),
+    TreeCount = XSum.
+
 main :-
-	board(2, 3, 5, Board),
-	print_board(Board).
+    solve(3, 3, [2, 0, 2], [2, 0, 2], [[0, 1, 0], [1, 0, 1], [0, 1, 0]]).

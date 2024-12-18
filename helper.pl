@@ -11,3 +11,9 @@ find([_ | Tl], Item, I, Result) :-
 	find(Tl, Item, I_, Result).
 find(List, Item, Result) :-
 	find(List, Item, 0, Result).
+
+% sum/2 calculates the sum of a list of integers
+sum([], 0).
+sum([Head | Tail], Sum) :-
+    sum(Tail, TailSum),
+    Sum is Head + TailSum.
