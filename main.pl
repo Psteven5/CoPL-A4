@@ -1,12 +1,8 @@
 % helper.pl contains utility functions unrelated to the program
 :- ['helper.pl'].
 
-% A cell is empty, contains a tree or a tent
-cell(Name, Result) :- find([
-	empty,
-	tree,
-	tent
-], Name, Result).
+% a cell can be empty, a tree, or a tent
+cells([empty, tree, tent]).
 
 % board/4 generates a tent puzzle board of M * N with K trees
 board(0, _, Result, _, Result) :- !.
