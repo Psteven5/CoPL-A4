@@ -25,3 +25,8 @@ rm_idx(Idx, [Hd | Tl], [Hd | NewTl]) :-
     NextIdx is Idx - 1,
     rm_idx(NextIdx, Tl, NewTl).
 
+% sum/2 calculates the sum of a list of integers
+sum([], 0).
+sum([Hd | Tl], Sum) :-
+    sum(Tl, TailSum),
+    Sum is Hd + TailSum.
