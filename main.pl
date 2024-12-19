@@ -22,18 +22,6 @@ print_board((_, _, [Hd | Tl])) :-
 	print_row(Hd), write('\n'),
 	print_board((_, _, Tl)).
 
-tree_count_row([], Initial, Result) :- Result is Initial.
-tree_count_row([Head | Tail], Initial, Result) :-
-    (Head = 1 ->
-        Count is Initial + 1
-    ; Count is Initial),
-    tree_count_row(Tail, Count, Result).
-
-tree_count_board([], Initial, Result) :- Result is Initial.
-tree_count_board([Head | Tail], Initial, Result) :-
-    tree_count_row(Head, Initial, RowCount),
-    tree_count_board(Tail, RowCount, Result).
-
 main :-
 	% build_board(3, 3, 5, Board),
 	% print_board(Board).

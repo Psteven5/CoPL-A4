@@ -25,14 +25,14 @@ adjacent_tent(R, C, [_ | Tl]) :- adjacent_tree(R, C, Tl).
 % count_tents_row/3 checks if the amount of tents in the current row is already full
 count_tents_row(X, R, TentBoard) :-
     nth0(R, TentBoard, Row),
-    sum_list(Row, Sum),
+    sum(Row, Sum),
     nth0(R, X, Total),
     Sum < Total.
 
 % count_tents_column/3 checks if the amount of tents in the current column is already full
 count_tents_column(Y, C, TentBoard) :-
     maplist(nth0(C), TentBoard, Col),
-    sum_list(Col, Sum),
+    sum(Col, Sum),
     nth0(C, Y, Total),
     Sum < Total.
 
@@ -90,22 +90,33 @@ solve_inner(X, Y, Board, Trees, TentBoard, TreeCount, TentCount, Result) :-
     solve_inner(X, Y, Board, NewTrees, NewTentBoard, TreeCount, NewTentCount, Result), !.
 
 % create_row/2 creates a list of zeroes of length N
-create_row(N, List) :-
-    length(Row, N),
-    maplist(=(0), Row),
-    List = Row.
+create_row(0, []).
+create_row(N, [0 | Tl]) :-
+    N > 0,
+    NewN is N - 1,
+    create_row(NewN, Tl), !.
 
 % create_board/3 creates a matrix of zeroes with M rows and N columns
-create_board(M, N, Result) :-
-    length(Result, M),
-    maplist(create_row(N), Result).
+create_board(0, _, []).
+create_board(M, N, [Row | Tl]) :-
+    M > 0,
+    NewM is M - 1,
+    create_row(N, Row),
+    create_board(NewM, N, Tl), !.
+
+% tree_count_board/3 counts the amount of trees in a matrix
+tree_count_board([], 0).
+tree_count_board([Hd | Tl], Sum) :-
+    sum(Hd, RowCount),
+    tree_count_board(Tl, TlSum),
+    Sum is RowCount + TlSum.
 
 % solve/6 initializes variables and starts the main solver loop
 solve(M, N, X, Y, Board, Result) :-
-    sum_list(X, XSum),
-    sum_list(Y, YSum),
+    sum(X, XSum),
+    sum(Y, YSum),
     XSum = YSum,
-    tree_count_board(Board, 0, TreeCount),
+    tree_count_board(Board, TreeCount),
     TreeCount = XSum,
     find_trees_tents(Board, Trees),
     create_board(M, N, TentBoard),
