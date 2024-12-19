@@ -17,3 +17,11 @@ find([_ | Tl], Item, I, Result) :-
 	find(Tl, Item, I_, Result).
 find(List, Item, Result) :-
 	find(List, Item, 0, Result).
+
+% rm_idx/3 removes item from List at index Idx
+rm_idx(0, [_ | Tl], Tl).
+rm_idx(Idx, [Hd | Tl], [Hd | NewTl]) :-
+    Idx > 0,
+    NextIdx is Idx - 1,
+    rm_idx(NextIdx, Tl, NewTl).
+
