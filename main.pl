@@ -24,7 +24,7 @@ print_board(_, []) :- !.
 print_board([Count | Tl1], [Row | Tl2]) :-
 	print(Count), write('|'), print_row(Row), write('\n'),
 	print_board(Tl1, Tl2).
-print_board((_, _, CountsY, CountsX, Cells)) :-
+print_board((CountsY, CountsX, Cells)) :-
 	write('  '), print_counts(CountsX), write('\n'),
 	print_board(CountsY, Cells).
 
@@ -44,7 +44,7 @@ print_solution(_, [], []) :- !.
 print_solution([Count | Tl1], [Row | Tl2], [TentRow | TentTl]) :-
 	print(Count), write('|'), print_row(Row, TentRow), write('\n'),
 	print_solution(Tl1, Tl2, TentTl).
-print_solution((_, _, CountsY, CountsX, Cells), TentBoard) :-
+print_solution((CountsY, CountsX, Cells), TentBoard) :-
 	write('  '), print_counts(CountsX), write('\n'),
 	print_solution(CountsY, Cells, TentBoard), !.
 

@@ -177,7 +177,10 @@ check_board(M, N, X, Y, Board) :-
     same_len(Board).
 
 % solve/2 initializes variables and starts the main solver loop
-solve((M, N, X, Y, Board), Result) :-
+solve((X, Y, Board), Result) :-
+    % get the length and width of the baord
+    list_len(X, M),
+    list_len(Y, N),
     % check if the board is legal
     check_board(M, N, X, Y, Board),
     % get tree locations

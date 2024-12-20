@@ -39,12 +39,6 @@ read_board(Input, []) :-
 % read_file/2 reads and parses a puzzle from File into Result
 read_file(File, Result) :-
     open(File, read, Input),
-    % read and parse M
-    read_line_to_codes(Input, Fst),
-    code_to_int(Fst, 0, M),
-    % read and parse N
-    read_line_to_codes(Input, Snd),
-    code_to_int(Snd, 0, N),
     % read and parse X
     read_line_to_codes(Input, Trd),
     code_list_to_int(Trd, X),
@@ -57,8 +51,10 @@ read_file(File, Result) :-
     read_board(Input, Board),
     close(Input),
     % check if the board is legal
+    list_len(X, M),
+    list_len(Y, N),
     check_board(M, N, X, Y, Board),
-    Result = (M, N, X, Y, Board).
+    Result = (X, Y, Board).
 
 % write the row and column counts
 write_counts(_, []) :- !.
@@ -82,7 +78,7 @@ write_solution(_, _, [], []) :- !.
 write_solution(Output, [Count | Tl1], [Row | Tl2], [TentRow | TentTl]) :-
 	write(Output, Count), write(Output, '|'), write_row(Output, Row, TentRow), write(Output, '\n'),
 	write_solution(Output, Tl1, Tl2, TentTl).
-write_solution(Output, (_, _, CountsY, CountsX, Cells), TentBoard) :-
+write_solution(Output, (CountsY, CountsX, Cells), TentBoard) :-
 	write(Output, '  '), write_counts(Output, CountsX), write(Output, '\n'),
 	write_solution(Output, CountsY, Cells, TentBoard), !.
 

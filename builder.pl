@@ -140,5 +140,5 @@ build_board(M, N, K, Result) :-
 	( place_trees(N, Cells_, Tents, Cells__) ->
 		remove_tents(Cells__, Cells___),
 		build_counts(M, N, Tents, CountsY, CountsX),
-		Result = (M, N, CountsY, CountsX, Cells___)
+		Result = (CountsY, CountsX, Cells___)
 	; build_board(M, N, K, Result)).
