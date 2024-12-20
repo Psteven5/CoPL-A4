@@ -36,8 +36,9 @@ read_board(Input, Board) :-
 read_board(Input, []) :-
     read_line_to_codes(Input, end_of_file).
 
-read_file(Result) :-
-    open("input.txt", read, Input),
+% read_file/2 reads and parses a puzzle from File into Result
+read_file(File, Result) :-
+    open(File, read, Input),
     % read and parse M
     read_line_to_codes(Input, Fst),
     code_to_int(Fst, 0, M),
@@ -58,3 +59,16 @@ read_file(Result) :-
     % check if the board is legal
     check_board(M, N, X, Y, Board),
     Result = (M, N, X, Y, Board).
+
+% write_board/2 writes all the lines of a solution on a different line of Output
+write_board(Output, [Row | Rest]) :-
+    writeln(Output, Row),
+    write_board(Output, Rest), !.
+write_board(_, []).
+
+% write_file/2 writes Solution into File
+write_file(File, Solution) :-
+    open(File, write, Output),
+    % write the lines of Board to output.txt
+    write_board(Output, Solution),
+    close(Output).

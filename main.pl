@@ -61,12 +61,16 @@ main :-
     % example 3
     writeln("solve/2 can solve a given puzzle: "),
     build_board(7, 7, 7, Board3),
-    writeln(Board3),
     print_board(Board3),
     solve(Board3, Solution3),
     print_solution(Board3, Solution3),
     write('\n'),
     % example 4
-    writeln("read_file/1 can read from 'input.txt' and create a Board"),
-    read_file(Board4),
-    print_board(Board4).
+    writeln("read_file/1 can read from 'puzzle.txt' and create a Board"),
+    read_file("puzzle.txt", Board4),
+    print_board(Board4),
+    write('\n'),
+    % example 5
+    writeln("write_file/1 can write a given solution to 'solution.txt'"),
+    solve(Board4, Solution4),
+    write_file("solution.txt", Solution4).
