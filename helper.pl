@@ -19,14 +19,33 @@ find(List, Item, Result) :-
 	find(List, Item, 0, Result).
 
 % rm_idx/3 removes item from List at index Idx
-rm_idx(0, [_ | Tl], Tl).
-rm_idx(Idx, [Hd | Tl], [Hd | NewTl]) :-
+rm_idx([_ | Tl], 0, Tl).
+rm_idx([Hd | Tl], Idx, [Hd | NewTl]) :-
     Idx > 0,
     NextIdx is Idx - 1,
-    rm_idx(NextIdx, Tl, NewTl).
+    rm_idx(Tl, NextIdx, NewTl).
 
 % sum/2 calculates the sum of a list of integers
 sum([], 0).
 sum([Hd | Tl], Sum) :-
     sum(Tl, TlSum),
     Sum is Hd + TlSum.
+
+% get_col/3 returns a column of Matrix at Idx as a List
+get_col([], _, []).
+get_col([Row | RestRows], Idx, [Elem | RestElem]) :-
+    find(Row, Elem, 0, Idx),
+    get_col(RestRows, Idx, RestElem).
+
+% insert/4 inserts Elem at Idx in List
+insert(Tl, 0, Elem, Result) :- Result = [Elem | Tl].
+insert([Hd | Tl], Idx, Elem, Result) :-
+    Idx > 0,
+    NewIdx is Idx - 1,
+    insert(Tl, NewIdx, Elem, Rest),
+    Result = [Hd | Rest].
+
+% get_elems/2 goes over every element of a list
+get_elems(Elem, [Elem|_]).
+get_elems(Elem, [_|Tail]) :-
+    get_elems(Elem, Tail).
