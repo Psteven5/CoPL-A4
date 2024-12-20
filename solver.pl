@@ -31,8 +31,8 @@ adjacent_tree(R, C, [_ | Tl]) :- adjacent_tree(R, C, Tl).
 adjacent_tent(_, _, []) :- false.
 adjacent_tent(R, C, [(Fst, Snd) | _]) :-
     (((R =:= Fst+1; R =:= Fst; R =:= Fst-1), (C =:= Snd+1; C =:= Snd-1)), !);
-    (((R =:= Fst+1; R =:= Fst-1), (C =:= Snd+1; C =:= Snd; C =:= Snd-1)), !).
-adjacent_tent(R, C, [_ | Tl]) :- adjacent_tree(R, C, Tl).
+    (((R =:= Fst+1; R =:= Fst-1), C =:= Snd), !).
+adjacent_tent(R, C, [_ | Tl]) :- adjacent_tent(R, C, Tl).
 
 % count_tents_row/3 checks if the amount of tents in the current row is already full
 count_tents_row(X, R, TentBoard) :-
@@ -110,19 +110,6 @@ place_tent(TentBoard, (R, C), Result) :-
     rm_idx(TentBoard, R, Rest),
     insert(Rest, R, NewRow, Result).
 
-% solve_inner/8 is the main solver loop
-solve_inner(_, _, _, _, _, _, TentBoard, TreeCount, TreeCount, Result) :- Result = TentBoard.
-solve_inner(M, N, X, Y, Board, Trees, TentBoard, TreeCount, TentCount, Result) :-
-    get_legal_pos(M, N, 0, 0, X, Y, Board, TentBoard, Trees, LegalPos),
-    get_elems(Curr, LegalPos),
-    find_adjacent_trees(M, N, Curr, Board, AdjTrees),
-    get_elems(Tree, AdjTrees),
-    find(Trees, Tree, 0, Idx),
-    rm_idx(Trees, Idx, NewTrees),
-    place_tent(TentBoard, Curr, NewTentBoard),
-    NewTentCount is TentCount + 1,
-    solve_inner(M, N, X, Y, Board, NewTrees, NewTentBoard, TreeCount, NewTentCount, Result), !.
-
 % create_row/2 creates a list of zeroes of length N
 create_row(0, []).
 create_row(N, [0 | Tl]) :-
@@ -145,6 +132,19 @@ tree_count_board([Hd | Tl], Sum) :-
     tree_count_board(Tl, TlSum),
     Sum is RowCount + TlSum.
 
+% solve/8 is the main solver loop
+solve(_, _, _, _, _, _, TentBoard, TreeCount, TreeCount, Result) :- Result = TentBoard.
+solve(M, N, X, Y, Board, Trees, TentBoard, TreeCount, TentCount, Result) :-
+    get_legal_pos(M, N, 0, 0, X, Y, Board, TentBoard, Trees, LegalPos),
+    get_elems(Curr, LegalPos),
+    find_adjacent_trees(M, N, Curr, Board, AdjTrees),
+    get_elems(Tree, AdjTrees),
+    find(Trees, Tree, 0, Idx),
+    rm_idx(Trees, Idx, NewTrees),
+    place_tent(TentBoard, Curr, NewTentBoard),
+    NewTentCount is TentCount + 1,
+    solve(M, N, X, Y, Board, NewTrees, NewTentBoard, TreeCount, NewTentCount, Result), !.
+
 % solve/2 initializes variables and starts the main solver loop
 solve((M, N, X, Y, Board), Result) :-
     sum(X, XSum),
@@ -154,4 +154,4 @@ solve((M, N, X, Y, Board), Result) :-
     TreeCount = XSum,
     find_trees_tents(M, N, 0, 0, Board, Trees),
     create_board(M, N, TentBoard),
-    solve_inner(M, N, X, Y, Board, Trees, TentBoard, TreeCount, 0, Result).
+    solve(M, N, X, Y, Board, Trees, TentBoard, TreeCount, 0, Result).
