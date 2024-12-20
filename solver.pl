@@ -11,6 +11,7 @@ find_trees_tents(M, N, R, C, Board, Result) :-
     R < M,
     C < N,
     find(Board, Row, 0, R),
+    % add the current location to the result if a tree is found
     ( find(Row, 1, 0, C) ->
         NewC is C + 1,
         find_trees_tents(M, N, R, NewC, Board, Tl),
@@ -68,9 +69,8 @@ get_legal_pos(M, N, R, N, X, Y, Board, TentBoard, Trees, Result) :-
 get_legal_pos(M, N, R, C, X, Y, Board, TentBoard, Trees, Result) :-
     R < M,
     C < N,
-    find(Board, Row, 0, R),
-    find(Row, _, 0, C),
     find_trees_tents(M, N, 0, 0, TentBoard, Tents),
+    % add the current location to the result if it is a legal position
     ( legal(X, Y, Board, TentBoard, Trees, Tents, R, C) ->
         NewC is C + 1,
         get_legal_pos(M, N, R, NewC, X, Y, Board, TentBoard, Trees, Tl),
@@ -80,23 +80,24 @@ get_legal_pos(M, N, R, C, X, Y, Board, TentBoard, Trees, Result) :-
         get_legal_pos(M, N, R, NewC, X, Y, Board, TentBoard, Trees, Tl),
         Result = Tl).
 
-% find_adjacent_trees_inner/6 is the main loop of find_adjacent_trees/5
-find_adjacent_trees_inner(_, _, _, _, [], []).
-find_adjacent_trees_inner(M, N, (R, C), Board, [(Fst, Snd) | Rest], Result) :-
+% find_adjacent_trees/6 is the main loop of find_adjacent_trees/5
+find_adjacent_trees(_, _, _, _, [], []).
+find_adjacent_trees(M, N, (R, C), Board, [(Fst, Snd) | Rest], Result) :-
     TreeR is R + Fst,
     TreeC is C + Snd,
+    % adds location if it is in bounds and adjacent to a tree
     ( TreeR < M, TreeR >= 0, TreeC < N, TreeC >= 0,
       find(Board, Row, 0, TreeR), find(Row, 1, 0, TreeC) ->
-        find_adjacent_trees_inner(M, N, (R, C), Board, Rest, Tl),
+        find_adjacent_trees(M, N, (R, C), Board, Rest, Tl),
         Result = [(TreeR, TreeC) | Tl]
     ;
-        find_adjacent_trees_inner(M, N, (R, C), Board, Rest, Tl),
+        find_adjacent_trees(M, N, (R, C), Board, Rest, Tl),
         Result = Tl).
 
 % find_adjacent_trees/5 gets all adjacent tree locations
 find_adjacent_trees(M, N, Loc, Board, Result) :-
     Sides = [(-1, 0), (0, 1), (1, 0), (0, -1)],
-    find_adjacent_trees_inner(M, N, Loc, Board, Sides, Result).
+    find_adjacent_trees(M, N, Loc, Board, Sides, Result).
 
 % place_tent_row/3 creates the row with the new tent
 place_tent_row(Row, C, Result) :-
@@ -136,8 +137,10 @@ tree_count_board([Hd | Tl], Sum) :-
 solve(_, _, _, _, _, _, TentBoard, TreeCount, TreeCount, Result) :- Result = TentBoard.
 solve(M, N, X, Y, Board, Trees, TentBoard, TreeCount, TentCount, Result) :-
     get_legal_pos(M, N, 0, 0, X, Y, Board, TentBoard, Trees, LegalPos),
+    % run this functor for every legal position
     get_elems(Curr, LegalPos),
     find_adjacent_trees(M, N, Curr, Board, AdjTrees),
+    % run this functor for every adjacent tree
     get_elems(Tree, AdjTrees),
     find(Trees, Tree, 0, Idx),
     rm_idx(Trees, Idx, NewTrees),
@@ -149,8 +152,10 @@ solve(M, N, X, Y, Board, Trees, TentBoard, TreeCount, TentCount, Result) :-
 solve((M, N, X, Y, Board), Result) :-
     sum(X, XSum),
     sum(Y, YSum),
+    % check if X and Y contain the same amount of tents
     XSum = YSum,
     tree_count_board(Board, TreeCount),
+    % check if there are the same amount of tents and trees
     TreeCount = XSum,
     find_trees_tents(M, N, 0, 0, Board, Trees),
     create_board(M, N, TentBoard),
