@@ -1,5 +1,6 @@
 :- ['builder.pl'].
 :- ['solver.pl'].
+:- ['fileio.pl'].
 
 % print ASCII for cells instead of words to make it more readable
 print_cell(0) :- write('.').
@@ -63,4 +64,9 @@ main :-
     writeln(Board3),
     print_board(Board3),
     solve(Board3, Solution3),
-    print_solution(Board3, Solution3).
+    print_solution(Board3, Solution3),
+    write('\n'),
+    % example 4
+    writeln("read_file/1 can read from 'input.txt' and create a Board"),
+    read_file(Board4),
+    print_board(Board4).

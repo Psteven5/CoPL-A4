@@ -148,8 +148,16 @@ solve(M, N, X, Y, Board, Trees, TentBoard, TreeCount, TentCount, Result) :-
     NewTentCount is TentCount + 1,
     solve(M, N, X, Y, Board, NewTrees, NewTentBoard, TreeCount, NewTentCount, Result), !.
 
-% solve/2 initializes variables and starts the main solver loop
-solve((M, N, X, Y, Board), Result) :-
+% same_len/1 checks if a boards rows are all the same length
+same_len([Row | Rest]) :-
+    list_len(Row, Width),
+    same_len(Rest, Width).
+same_len([Row | Rest], Width) :-
+    list_len(Row, Width),
+    same_len(Rest, Width).
+same_len([], _).
+
+check_board(M, N, X, Y, Board) :-
     sum(X, XSum),
     sum(Y, YSum),
     % check if X and Y contain the same amount of tents
@@ -157,6 +165,24 @@ solve((M, N, X, Y, Board), Result) :-
     tree_count_board(Board, TreeCount),
     % check if there are the same amount of tents and trees
     TreeCount = XSum,
+    list_len(Board, Height),
+    M = Height,
+    find(Board, Row, 0, 0),
+    list_len(Row, Width),
+    N = Width,
+    list_len(X, XLen),
+    M = XLen,
+    list_len(Y, YLen),
+    N = YLen,
+    same_len(Board).
+
+% solve/2 initializes variables and starts the main solver loop
+solve((M, N, X, Y, Board), Result) :-
+    % check if the board is legal
+    check_board(M, N, X, Y, Board),
+    % get tree locations
     find_trees_tents(M, N, 0, 0, Board, Trees),
+    % get amount of trees
+    tree_count_board(Board, TreeCount),
     create_board(M, N, TentBoard),
     solve(M, N, X, Y, Board, Trees, TentBoard, TreeCount, 0, Result).

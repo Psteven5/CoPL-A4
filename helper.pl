@@ -66,3 +66,14 @@ insert([Hd | Tl], Idx, Elem, Result) :-
 get_elems(Elem, [Elem|_]).
 get_elems(Elem, [_|Tail]) :-
     get_elems(Elem, Tail).
+
+% split_at/4 splits a List at the first instance of Num
+split_at([Hd | Tl], Hd, [], Tl) :- !.
+split_at([Hd | Tl], Num, [Hd | Fst], Lst) :-
+    split_at(Tl, Num, Fst, Lst), !.
+
+% list_length/2 calculates the length of List
+list_len([], 0).
+list_len([_ | Tl], Length) :-
+    list_len(Tl, TlLength),
+    Length is TlLength + 1.
