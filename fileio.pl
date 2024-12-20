@@ -40,11 +40,11 @@ read_board(Input, []) :-
 read_file(File, Result) :-
     open(File, read, Input),
     % read and parse X
-    read_line_to_codes(Input, Trd),
-    code_list_to_int(Trd, X),
+    read_line_to_codes(Input, Fst),
+    code_list_to_int(Fst, X),
     % read and parse Y
-    read_line_to_codes(Input, Fth),
-    code_list_to_int(Fth, Y),
+    read_line_to_codes(Input, Snd),
+    code_list_to_int(Snd, Y),
     % read the empty line
     read_line_to_codes(Input, []),
     % read and parse game grid
