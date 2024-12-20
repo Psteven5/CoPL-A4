@@ -60,15 +60,35 @@ read_file(File, Result) :-
     check_board(M, N, X, Y, Board),
     Result = (M, N, X, Y, Board).
 
-% write_board/2 writes all the lines of a solution on a different line of Output
-write_board(Output, [Row | Rest]) :-
-    writeln(Output, Row),
-    write_board(Output, Rest), !.
-write_board(_, []).
+% write the row and column counts
+write_counts(_, []) :- !.
+write_counts(Output, [Hd | Tl]) :-
+	write(Output, Hd), write(Output, '_'),
+	write_counts(Output, Tl).
+
+% write ASCII for cells instead of words to make it more readable
+write_cell(Output, 0, 0) :- write(Output, '.').
+write_cell(Output, 1, 0)  :- write(Output, '*').
+write_cell(Output, 0, 1)  :- write(Output, '^').
+
+% writes a row of a Tents and Trees solution board
+write_row(_, [], []) :- !.
+write_row(Output, [Hd | Tl], [TentHd | TentTl]) :-
+	write_cell(Output, Hd, TentHd), write(Output, ' '),
+	write_row(Output, Tl, TentTl).
+
+% writes a Tents and Trees puzzle solution
+write_solution(_, _, [], []) :- !.
+write_solution(Output, [Count | Tl1], [Row | Tl2], [TentRow | TentTl]) :-
+	write(Output, Count), write(Output, '|'), write_row(Output, Row, TentRow), write(Output, '\n'),
+	write_solution(Output, Tl1, Tl2, TentTl).
+write_solution(Output, (_, _, CountsY, CountsX, Cells), TentBoard) :-
+	write(Output, '  '), write_counts(Output, CountsX), write(Output, '\n'),
+	write_solution(Output, CountsY, Cells, TentBoard), !.
 
 % write_file/2 writes Solution into File
-write_file(File, Solution) :-
+write_file(File, Board, Solution) :-
     open(File, write, Output),
     % write the lines of Board to output.txt
-    write_board(Output, Solution),
+    write_solution(Output, Board, Solution),
     close(Output).

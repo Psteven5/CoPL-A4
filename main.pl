@@ -13,6 +13,7 @@ print_row([Hd | Tl]) :-
 	print_cell(Hd), write(' '),
 	print_row(Tl).
 
+% write the row and column counts
 print_counts([]) :- !.
 print_counts([Hd | Tl]) :-
 	print(Hd), write('_'),
@@ -66,11 +67,12 @@ main :-
     print_solution(Board3, Solution3),
     write('\n'),
     % example 4
-    writeln("read_file/1 can read from 'puzzle.txt' and create a Board"),
+    writeln("read_file/2 can read from 'puzzle.txt' and create a Board"),
     read_file("puzzle.txt", Board4),
     print_board(Board4),
     write('\n'),
     % example 5
-    writeln("write_file/1 can write a given solution to 'solution.txt'"),
+    writeln("write_file/3 can write a given solution to 'solution.txt'"),
     solve(Board4, Solution4),
-    write_file("solution.txt", Solution4).
+    print_solution(Board4, Solution4),
+    write_file("solution.txt", Board4, Solution4).
