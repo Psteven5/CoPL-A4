@@ -1,3 +1,6 @@
+% empty/1 returns whether List is empty
+empty([]).
+
 % head/2 returns the first Item in List
 head([Hd | _], Hd).
 
@@ -10,6 +13,11 @@ get([_ | Tl], I, Result) :-
 	I_ is I - 1,
 	get(Tl, I_, Result).	
 
+get_random(List, Result) :-
+	length(List, Length),
+	random(0, Length, I),
+	get(List, I, Result).
+
 % find/3 returns the index of Item if it is in List
 find([Item | _], Item, Result, Result) :- !.
 find([_ | Tl], Item, I, Result) :-
@@ -17,6 +25,15 @@ find([_ | Tl], Item, I, Result) :-
 	find(Tl, Item, I_, Result).
 find(List, Item, Result) :-
 	find(List, Item, 0, Result).
+
+% inc/3 increments Item at index I in List
+inc([], _, []) :- !.
+inc([Item | Tl], 0, [Item_ | Acc]) :- !,
+	Item_ is Item + 1,
+	inc(Tl, -1, Acc).
+inc([Item | Tl], I, [Item | Acc]) :-
+	I_ is I - 1,
+	inc(Tl, I_, Acc).
 
 % rm_idx/3 removes item from List at index Idx
 rm_idx([_ | Tl], 0, Tl).
