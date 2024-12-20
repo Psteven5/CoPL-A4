@@ -145,8 +145,8 @@ tree_count_board([Hd | Tl], Sum) :-
     tree_count_board(Tl, TlSum),
     Sum is RowCount + TlSum.
 
-% solve/6 initializes variables and starts the main solver loop
-solve(M, N, X, Y, Board, Result) :-
+% solve/2 initializes variables and starts the main solver loop
+solve((M, N, X, Y, Board), Result) :-
     sum(X, XSum),
     sum(Y, YSum),
     XSum = YSum,
