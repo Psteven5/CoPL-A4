@@ -26,17 +26,7 @@ Board row 2
 Board row M  
 END
 
-Where X is the amount of tents per row, Y is the amount of tents per column, 
-and Board row 1..M are the rows of the board. Below is an example file.
-
-FILE EXAMPLE  
-[2,0,2]  
-[2,0,2]  
-  
-[0,1,0]  
-[1,0,1]  
-[0,1,0]  
-END  
-
-The solution of a puzzle can be either printed to the console using
+Where X is the amount of tents per row, Y is the amount of tents per column,
+and Board row 1..M are the rows of the board. An example file can be found in
+puzzle.txt. The solution of a puzzle can be either printed to the console using
 print_solution/2 or written to a file using write_file/3
