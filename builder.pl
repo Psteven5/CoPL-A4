@@ -81,6 +81,7 @@ get_empties([Row | Tl], R, Y, X, Acc, Result) :-
 get_empties(Cells, Y, X, Result) :-
 	get_empties(Cells, 0, Y, X, [], Result).
 
+% place_trees/4 randomly places trees on the board
 place_trees(_, Result, [], Result) :- !.
 place_trees(N, Cells, [I | Tl], Result) :-
 	R is I // N,
@@ -112,6 +113,7 @@ build_row(C, Cell, [Cell | Tl]) :-
 	C_ is C - 1,
 	build_row(C_, Cell, Tl).
 
+% build_counts/6 counts the tents to create the X and Y Lists
 build_counts(_, [], CountsY, CountsX, CountsY, CountsX) :- !.
 build_counts(N, [I | Tl], CountsY, CountsX, CountsY_, CountsX_) :-
 	R is I // N,

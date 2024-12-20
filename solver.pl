@@ -134,7 +134,7 @@ tree_count_board([Hd | Tl], Sum) :-
     Sum is RowCount + TlSum.
 
 % solve/8 is the main solver loop
-solve(_, _, _, _, _, _, TentBoard, TreeCount, TreeCount, Result) :- Result = TentBoard.
+solve(_, _, _, _, _, _, TentBoard, TreeCount, TreeCount, TentBoard).
 solve(M, N, X, Y, Board, Trees, TentBoard, TreeCount, TentCount, Result) :-
     get_legal_pos(M, N, 0, 0, X, Y, Board, TentBoard, Trees, LegalPos),
     % run this functor for every legal position
