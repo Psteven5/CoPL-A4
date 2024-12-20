@@ -4,7 +4,7 @@
 % check_tents_row/5 is a helper function to check_tents/3
 check_tents_row([], _, _, _, _) :- !.
 check_tents_row([Cell | Tl], R, C, Y, X) :-
-	\+ ( tent == Cell,
+	\+ ( 2 == Cell,
 	     (Y =:= R - 1; Y =:= R; Y =:= R + 1),
 	     (X =:= C - 1; X =:= C; X =:= C + 1)),
 	C_ is C + 1,
@@ -48,7 +48,7 @@ place_tents(M, N, Cells, K, Depth, Cells_, TentsIn, TentsOut) :-
 	random(0, M, Y),
 	random(0, N, X),
 	( check_tents(Cells, Y, X) ->
-		modify_cell(Cells, Y, X, tent, Cells__),
+		modify_cell(Cells, Y, X, 2, Cells__),
 		K_ is K - 1,
 		I is Y * N + X,
 		place_tents(M, N, Cells__, K_, Depth, Cells_, [I | TentsIn], TentsOut)
@@ -64,7 +64,7 @@ place_tents(M, N, Cells, K, Cells_, Tents) :-
 get_empties_row([], _, _, _, _, Result, Result) :- !.
 get_empties_row([Cell | Tl], R, C, Y, X, Acc, Result) :-
 	C_ is C + 1,
-	( empty == Cell,
+	( 0 == Cell,
 	  (((Y =:= R - 1; Y =:= R + 1), X =:= C);
 	    (Y =:= R, (X =:= C - 1; X =:= C + 1))) ->
 		get_empties_row(Tl, R, C_, Y, X, [(R, C) | Acc], Result)
@@ -88,13 +88,13 @@ place_trees(N, Cells, [I | Tl], Result) :-
 	get_empties(Cells, R, C, Empties),
 	\+ empty(Empties),
 	get_random(Empties, (Y, X)),
-	modify_cell(Cells, Y, X, tree, Cells_), 
+	modify_cell(Cells, Y, X, 1, Cells_), 
 	place_trees(N, Cells_, Tl, Result).
 
 % build_row/2 builds an empty row of a Tents and Trees puzzle board of size N
 % is a helper function to build_board/4
 remove_tents_row([], []) :- !.
-remove_tents_row([tent | Tl], [empty | Acc]) :- !,
+remove_tents_row([2 | Tl], [0 | Acc]) :- !,
 	remove_tents_row(Tl, Acc).
 remove_tents_row([Cell | Tl], [Cell | Acc]) :-
 	remove_tents_row(Tl, Acc).
@@ -112,15 +112,6 @@ build_row(C, Cell, [Cell | Tl]) :-
 	C_ is C - 1,
 	build_row(C_, Cell, Tl).
 
-% build_counts_y_(_, [], Result, Result) :- !.
-% build_counts_y_(N, [I | Tl], Counts, Result) :-
-% 	R is I // N,
-% 	inc(Counts, R, Counts_),
-% 	build_counts_y_(N, Tl, Counts_, Result).
-% build_counts_y(M, N, Tents, Result) :-
-% 	build_row(M, 0, Counts),
-% 	build_counts_y_(N, Tents, Counts, Result).
-
 build_counts(_, [], CountsY, CountsX, CountsY, CountsX) :- !.
 build_counts(N, [I | Tl], CountsY, CountsX, CountsY_, CountsX_) :-
 	R is I // N,
@@ -136,7 +127,7 @@ build_counts(M, N, Tents, CountsY, CountsX) :-
 % build_board/4 builds a valid Tents and Trees puzzle board of size M * N with K trees
 build_board(0, _, []) :- !.
 build_board(R, N, [Row | Acc]) :-
-	build_row(N, empty, Row),
+	build_row(N, 0, Row),
 	R_ is R - 1,
 	build_board(R_, N, Acc).
 build_board(M, N, K, Result) :-
